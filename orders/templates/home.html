@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <div class="row">
+            <!-- Основной контент -->
+            <div class="col-md-8">
+                {% include 'search_form.html' %}
+                <h3>Товары</h3>
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Клиент ID</th>
+                            <th>Трек-код</th>
+                            <th>Вес (кг)</th>
+                            <th>Статус</th>
+                            <th>Добавить в корзину</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for product in products %}
+                            <tr>
+                                <td>{{ product.client_id }}</td>
+                                <td>{{ product.track_code }}</td>
+                                <td>{{ product.weight }}</td>
+                                <td>{{ product.get_status_display }}</td>
+                                <td>
+                                    {% if user.is_authenticated %}
+                                        <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success">Добавить</a>
+                                    {% else %}
+                                        <span>Только для авторизованных пользователей</span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                        {% empty %}
+                            <tr>
+                                <td colspan="5">Нет товаров для отображения</td>
+                            </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Корзина сбоку -->
+            {% include 'cart.html' %}
+        </div>
+    </div>
+{% endblock %}

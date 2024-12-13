@@ -1,0 +1,34 @@
+<div class="col-md-4 mt-3">
+    <div class="card">
+        <div class="card-header">
+            <h5>Выдача</h5>
+        </div>
+        <div class="card-body">
+            {% if cart_items %}
+                <ul class="list-group">
+                    {% for item in cart_items %}
+                        <li class="list-group-item">
+                            <strong>{{ item.product.track_code }}</strong> - {{ item.product.get_status_display }}
+                            <br>
+                            Вес: {{ item.product.weight }} кг
+                        </li>
+                    {% endfor %}
+                </ul>
+                <hr>
+                <p><strong>Итоговая стоимость:</strong> {{ total_price }} ₽</p>
+                <p><strong>Общий вес:</strong> {{ total_weight }} кг</p>
+
+                <!-- Здесь будет выводиться метод платежа -->
+                <p><strong>Метод платежа:</strong> <span>Не выбран</span></p>
+
+                <!-- Кнопка для выдачи -->
+                <form method="POST" action="#">
+                    {% csrf_token %}
+                    <button type="submit" class="btn btn-primary w-100">Выдать</button>
+                </form>
+            {% else %}
+                <p>Корзина пуста</p>
+            {% endif %}
+        </div>
+    </div>
+</div>

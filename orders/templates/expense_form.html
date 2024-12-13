@@ -1,0 +1,10 @@
+{% if user.is_authenticated %}
+    <div class="mb-5">
+        <h2>Добавить расход</h2>
+        <form method="post" class="form-group">
+            {% csrf_token %}
+            {{ expense_form.as_p }}
+            <button type="submit" class="btn btn-success">Добавить расход</button>
+        </form>
+    </div>
+{% endif %}

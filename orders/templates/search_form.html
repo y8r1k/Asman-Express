@@ -1,0 +1,14 @@
+<!-- templates/search_form.html -->
+<h2>Поиск товаров</h2>
+<form method="get" action="{% url 'home' %}" class="d-flex mb-3">
+    <div class="input-group">
+        <!-- Поле для ввода ID клиента -->
+        <input type="text" class="form-control" name="client_id" placeholder="Клиент ID" value="{{ request.GET.client_id }}">
+
+        <!-- Поле для ввода трек-кода -->
+        <input type="text" class="form-control" name="track_code" placeholder="Трек-код" value="{{ request.GET.track_code }}">
+
+        <!-- Кнопка для отправки формы -->
+        <button class="btn btn-primary" type="submit">Поиск</button>
+    </div>
+</form>

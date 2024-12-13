@@ -1,0 +1,31 @@
+<div class="mb-5">
+    <h2>Товары</h2>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>Клиент ID</th>
+                <th>Трек-код</th>
+                <th>Вес</th>
+                <th>Статус</th>
+                <th>Добавить в корзину</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for product in products %}
+                <tr>
+                    <td>{{ product.client.id }}</td>
+                    <td>{{ product.track_code }}</td>
+                    <td>{{ product.weight }}</td>
+                    <td>{{ product.у }}</td>
+                    <td>
+                        {% if user.is_authenticated %}
+                            <a href="{% url 'add_to_cart' product.id %}" class="btn btn-success btn-sm">Добавить в корзину</a>
+                        {% else %}
+                            <span>Только для авторизованных пользователей</span>
+                        {% endif %}
+                    </td>
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>

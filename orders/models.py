@@ -9,10 +9,10 @@ class Product(models.Model):
         ISSUED = ('issued', 'Выдан')
         NOT_ISSUED = ('not_issued', 'Не выдан')
 
-    track_code = models.CharField('Трек-код', max_length=255)
-    weight = models.DecimalField('Вес (кг)', max_digits=10, decimal_places=2)
+    track_code = models.CharField(verbose_name='Трек-код', max_length=255)
+    weight = models.DecimalField(verbose_name='Вес (кг)', max_digits=10, decimal_places=2)
     client = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Клиент")
-    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOT_ISSUED)
+    status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOT_ISSUED, verbose_name="Статус")
 
     def __str__(self):
         return f'{self.track_code} - {self.status}'
@@ -23,10 +23,10 @@ class Product(models.Model):
 
 
 class Expense(models.Model):
-    amount = models.DecimalField('Сумма расхода (сом)', max_digits=10, decimal_places=2)
-    comment = models.TextField('Комментарий', blank=True, null=True)
+    amount = models.DecimalField(verbose_name='Сумма расхода (сом)', max_digits=10, decimal_places=2)
+    comment = models.TextField(verbose_name='Комментарий', blank=True, null=True)
     manager = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Менеджер')
-    date_time = models.DateTimeField('Дата и время', auto_now_add=True)
+    date_time = models.DateTimeField(verbose_name='Дата и время', auto_now_add=True)
 
     def __str__(self):
         return f'{self.manager.username} - расход'
@@ -37,9 +37,7 @@ class Expense(models.Model):
 
 
 class Cart(models.Model):
-    manager = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Пользователь')
-    total_weight = models.DecimalField('Общий вес (кг)', max_digits=10, decimal_places=2)
-    total_price = models.DecimalField('Общая стоимость (сом)', max_digits=10, decimal_places=2)
+    manager = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Менеджер')
 
     def __str__(self):
         return f'Корзина для {self.manager.username}'
@@ -71,12 +69,17 @@ class Issuance(models.Model):
     #       4) кто выдал
     #       5) комментарий опционально
     #       6) дата выдачи
+    class MethodOfPayment(models.TextChoices):
+        CASH = ('cash', 'наличка')
+        MBank = ('mbank', 'мбанк')
+        OPTIMA = ('optima', 'optima')
+
     total_weight = models.DecimalField(verbose_name='Общий вес (кг)', max_digits=10, decimal_places=2)
     total_price = models.DecimalField(verbose_name='Общая стоимость (сом)', max_digits=10, decimal_places=2)
-    method_of_payment = models.CharField(verbose_name='Метод оплаты', max_length=50)
+    method_of_payment = models.CharField(verbose_name='Метод оплаты', max_length=30, choices=MethodOfPayment.choices)
     manager = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name='Кто выдал')
     comment = models.TextField(verbose_name='Комментарий', blank=True, null=True)
-    date = models.DateTimeField('Дата выдачи', auto_now_add=True)
+    date_time = models.DateTimeField(verbose_name='Дата и время выдачи', auto_now_add=True)
 
     def __str__(self):
         return f'Выдача менеджера {self.manager.username}'

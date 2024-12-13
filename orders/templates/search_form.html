@@ -1,7 +1,12 @@
-<!-- templates/search_form.html -->
 <h2>Поиск товаров</h2>
 <form method="get" action="{% url 'home' %}" class="d-flex mb-3">
     <div class="input-group">
+        <!-- Поле для выбора типа поиска -->
+        <select class="form-control" name="search_by">
+            <option value="client_id" {% if request.GET.search_by == 'client_id' %}selected{% endif %}>ID клиента</option>
+            <option value="track_code" {% if request.GET.search_by == 'track_code' %}selected{% endif %}>Трек-код</option>
+        </select>
+
         <!-- Поле для ввода ID клиента -->
         <input type="text" class="form-control" name="client_id" placeholder="Клиент ID" value="{{ request.GET.client_id }}">
 
@@ -12,3 +17,4 @@
         <button class="btn btn-primary" type="submit">Поиск</button>
     </div>
 </form>
+</p>

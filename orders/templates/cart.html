@@ -1,33 +1,46 @@
-<div class="col-md-4 mt-3">
+<div class="col-md-8 mt-3">
     <div class="card">
         <div class="card-header">
-            <h5>Выдача</h5>
+            <h5>Корзина</h5>
         </div>
         <div class="card-body">
             {% if cart_items %}
-                <ul class="list-group">
+                <ul class="list-group" id="cart-list">
                     {% for item in cart_items %}
-                        <li class="list-group-item">
-                            <strong>{{ item.product.track_code }}</strong> - {{ item.product.get_status_display }}
-                            <br>
-                            Вес: {{ item.product.weight }} кг
+                        <li class="list-group-item d-flex justify-content-between align-items-center" id="cart-item-{{ item.product.id }}">
+                            <div>
+                                <strong>{{ item.product.track_code }}</strong> - {{ item.product.get_status_display }}
+                                <br>
+                                <small>Вес: {{ item.product.weight }} кг</small>
+                            </div>
+                            <button class="btn btn-danger btn-sm remove-from-cart"
+                                    data-product-id="{{ item.product.id }}">
+                                <i class="bi bi-trash"></i> Удалить
+                            </button>
                         </li>
                     {% endfor %}
                 </ul>
                 <hr>
-                <p><strong>Итоговая стоимость:</strong> {{ total_price }} ₽</p>
-                <p><strong>Общий вес:</strong> {{ total_weight }} кг</p>
 
-                <!-- Здесь будет выводиться метод платежа -->
-                <p><strong>Метод платежа:</strong> <span>Не выбран</span></p>
+                <div class="d-flex justify-content-between">
+                    <p id="total-price"><strong>Итоговая стоимость:</strong> {{ total_price }} сом</p>
+                    <p id="total-weight"><strong>Общий вес:</strong> {{ total_weight }} кг</p>
+                </div>
 
-                <!-- Кнопка для выдачи -->
-                <form method="POST" action="#">
+                <form method="POST" id="checkout-form">
                     {% csrf_token %}
-                    <button type="submit" class="btn btn-primary w-100">Выдать</button>
+
+                    <div class="mb-3">
+                        <label for="id_total_weight" class="form-label">Общий вес (кг)</label>
+                        <input type="number" step="0.01" name="total_weight" id="id_total_weight" class="form-control"
+                               value="{{ total_weight }}" readonly>
+                    </div>
+                    <button type="submit" class="btn btn-success w-100">Оформить</button>
                 </form>
             {% else %}
-                <p>Корзина пуста</p>
+                <div class="alert alert-warning" role="alert">
+                    Ваша корзина пуста.
+                </div>
             {% endif %}
         </div>
     </div>

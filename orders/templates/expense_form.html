@@ -1,10 +1,36 @@
-{% if user.is_authenticated %}
-    <div class="mb-5">
-        <h2>Добавить расход</h2>
-        <form method="post" class="form-group">
+{% extends 'base.html' %}
+
+{% block content %}
+    <div class="container mt-5">
+        <h2 class="mb-4">Добавить расход</h2>
+        <form method="post">
             {% csrf_token %}
-            {{ expense_form.as_p }}
-            <button type="submit" class="btn btn-success">Добавить расход</button>
+
+            <div class="mb-3">
+                <label for="id_amount" class="form-label">Сумма расхода (сом)</label>
+                <input type="number" name="amount" id="id_amount" class="form-control" value="{{ form.amount.value }}">
+                {% if form.amount.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.amount.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="mb-3">
+                <label for="id_comment" class="form-label">Комментарий</label>
+                <textarea name="comment" id="id_comment" class="form-control">{{ form.comment.value }}</textarea>
+                {% if form.comment.errors %}
+                    <div class="invalid-feedback">
+                        {% for error in form.comment.errors %}
+                            <p>{{ error }}</p>
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <button type="submit" class="btn btn-primary">Добавить расход</button>
         </form>
     </div>
-{% endif %}
+{% endblock %}

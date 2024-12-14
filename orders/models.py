@@ -3,6 +3,16 @@ from django.contrib.auth import get_user_model
 
 User = get_user_model()
 
+class Client(models.Model):
+    id = models.CharField(primary_key=True, max_length=255)
+
+    def __str__(self):
+        return f'Клиент : {self.id}'
+
+    class Meta:
+        verbose_name = 'Клиент'
+        verbose_name_plural = 'Клиенты'
+
 
 class Product(models.Model):
     class Status(models.TextChoices):
@@ -11,7 +21,7 @@ class Product(models.Model):
 
     track_code = models.CharField(verbose_name='Трек-код', max_length=255)
     weight = models.DecimalField(verbose_name='Вес (кг)', max_digits=10, decimal_places=2)
-    client = models.ForeignKey(User, on_delete=models.CASCADE, verbose_name="Клиент")
+    client = models.ForeignKey(Client, on_delete=models.CASCADE, verbose_name="Клиент")
     status = models.CharField(max_length=20, choices=Status.choices, default=Status.NOT_ISSUED, verbose_name="Статус")
 
     def __str__(self):

@@ -2,15 +2,13 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth import login, logout
 from django.contrib.auth.forms import AuthenticationForm
-from django.urls import reverse
 from django.http import JsonResponse
 
-from .models import Product, Cart, CartItem, IssuedProduct
+from .models import Product, Cart, CartItem, IssuedProduct, Client
 from .forms import SearchForm, ExpenseForm, IssuanceForm
 
 
 def home(request):
-    # Получаем все товары с фильтрацией по статусу "не выдан"
     products = Product.objects.filter(status=Product.Status.NOT_ISSUED)
 
     # Обработка формы поиска
@@ -23,23 +21,24 @@ def home(request):
 
         if search_by == 'client_id' and client_id:
             # Фильтрация по client_id
+            client = get_object_or_404(Client, id=client_id)
+            products = products.filter(client=client)
             products = products.filter(client_id=client_id)
         elif search_by == 'track_code' and track_code:
             # Фильтрация по track_code
             products = products.filter(track_code__icontains=track_code)
 
-    # Получаем корзину пользователя (если он авторизован)
+    # Корзина пользователя, если авторизован
     cart = Cart.objects.filter(manager=request.user).first() if request.user.is_authenticated else None
     cart_items = cart.items.all() if cart else []
 
-    # Считаем итоговую стоимость и общий вес товаров в корзине
+    # итоговая стоимость и общий вес
     total_price = sum(item.product.weight * 100 for item in cart_items)  # Пример расчета
     total_weight = sum(item.product.weight for item in cart_items)
 
-    # Создаём множество из ID товаров в корзине для быстрого поиска
+    # множество из ID товаров в корзине для быстрого поиска
     cart_product_ids = {item.product.id for item in cart_items}
 
-    # Рендерим шаблон с переданными данными
     return render(request, 'home.html', {
         'products': products,
         'search_form': search_form,
@@ -49,28 +48,6 @@ def home(request):
         'cart_product_ids': cart_product_ids,
     })
 
-
-def login_view(request):
-    if request.method == 'POST':
-        form = AuthenticationForm(request, data=request.POST)
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            return redirect('home')
-    else:
-        form = AuthenticationForm()
-
-    return render(request, 'login.html', {'form': form})
-
-
-def logout_view(request):
-    logout(request)
-    return redirect('home')
-
-
-# views.py
-from django.http import JsonResponse
-from .models import Product, Cart, CartItem
 
 @login_required
 def add_to_cart(request, product_id):
@@ -88,7 +65,6 @@ def add_to_cart(request, product_id):
 
     else:
         return JsonResponse({'status': 'error', 'message': 'Недопустимый запрос'}, status=400)
-
 
 
 @login_required
@@ -190,3 +166,21 @@ def issue_cart(request):
         'total_price': total_price,
         'form': form,
     })
+
+
+def login_view(request):
+    if request.method == 'POST':
+        form = AuthenticationForm(request, data=request.POST)
+        if form.is_valid():
+            user = form.get_user()
+            login(request, user)
+            return redirect('home')
+    else:
+        form = AuthenticationForm()
+
+    return render(request, 'login.html', {'form': form})
+
+
+def logout_view(request):
+    logout(request)
+    return redirect('home')

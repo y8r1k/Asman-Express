@@ -72,23 +72,20 @@ def logout_view(request):
 from django.http import JsonResponse
 from .models import Product, Cart, CartItem
 
+@login_required
 def add_to_cart(request, product_id):
-    if request.method == 'POST' and request.user.is_authenticated:
-        try:
-            product = Product.objects.get(id=product_id)
-            cart, created = Cart.objects.get_or_create(user=request.user, is_active=True)
+    if request.method == 'POST':
+        product = Product.objects.get(id=product_id)
+        cart, created = Cart.objects.get_or_create(manager=request.user)
 
-            # Проверяем, существует ли уже этот товар в корзине
-            if not CartItem.objects.filter(cart=cart, product=product).exists():
-                CartItem.objects.create(cart=cart, product=product)
-            else:
-                return JsonResponse({'status': 'error', 'message': 'Товар уже в корзине'})
+        # Проверяем, существует ли уже этот товар в корзине
+        if not CartItem.objects.filter(cart=cart, product=product).exists():
+            CartItem.objects.create(cart=cart, product=product)
+        else:
+            return JsonResponse({'status': 'error', 'message': 'Товар уже в корзине'})
 
-            return JsonResponse({'status': 'success', 'message': 'Товар добавлен в корзину'})
-        except Product.DoesNotExist:
-            return JsonResponse({'status': 'error', 'message': 'Продукт не найден'}, status=404)
-        except Exception as e:
-            return JsonResponse({'status': 'error', 'message': str(e)}, status=500)
+        return JsonResponse({'status': 'success', 'message': 'Товар добавлен в корзину'})
+
     else:
         return JsonResponse({'status': 'error', 'message': 'Недопустимый запрос'}, status=400)
 
@@ -103,8 +100,8 @@ def remove_from_cart(request, product_id):
             cart_item = CartItem.objects.filter(cart=cart, product=product).first()
             if cart_item:
                 cart_item.delete()
-
-        return update_cart(request)  # Обновляем корзину и возвращаем данные
+        return JsonResponse({'status': 'success', 'message': 'Товар удалён из корзины'})
+    return JsonResponse({'status': 'error', 'message': 'Недопустимый запрос'}, status=400)
 
 
 @login_required

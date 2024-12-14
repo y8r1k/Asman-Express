@@ -1,29 +1,83 @@
-# Виртуальное окружение
-.venv/
-
-# Файлы среды разработки PyCharm
-.idea/
-*.iml
-
-# Файл базы данных SQLite
-db.sqlite3
-
-# Скомпилированные файлы байт-кода Python
-__pycache__/
+# Python
 *.pyc
+*.pyo
+*.pyd
+__pycache__/
+*.so
 
-# Логи
+# Django
+*.log
+*.pot
+*.py[cod]
+*.sqlite3
+*.env
+.env
+db.sqlite3
+media/
+staticfiles/
+
+# If your Django project includes translations
+*.mo
+*.po
+
+# Ignore the local settings file
+local_settings.py
+
+# Django migrations
+**/migrations/
+**/migrations/*.py
+!**/migrations/__init__.py
+
+# Virtual environments
+venv/
+ENV/
+env/
+.venv/
+.VENV/
+env.bak/
+venv.bak/
+my_env/
+
+# PyCharm
+.idea/
+
+# VS Code
+.vscode/
+
+# macOS
+.DS_Store
+
+# Windows
+Thumbs.db
+ehthumbs.db
+
+# Coverage reports
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+*.py,cover
+.hypothesis/
+
+# Test and temp files
+.tox/
+.pytest_cache/
+.cache/
+*.bak
+*.swp
+*.tmp
+*.out
+*.pid
+*.gz
 *.log
 
-# Пайтон кэш
-.pycache/
+# Jupyter Notebook
+.ipynb_checkpoints
 
-# Временные файлы
-*.tmp
+# Other editors
 *~
-
-# Игнорируем файлы миграций, если они не нужны для деплоя
-migrations/*.py
-
-# Локальные настройки
-local_settings.py
+.project
+.pydevproject
